@@ -3,12 +3,6 @@
 # Exit on errors
 set -e
 
-# Clone repo
-git clone https://github.com/BrahimChatri/loockup.git
-
-# Enter directory
-cd loockup
-
 # Create and activate virtual environment
 python3 -m venv venv
 source venv/bin/activate
