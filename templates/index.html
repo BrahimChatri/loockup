@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Part Lookup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        video {
+            border: 1px solid #ccc;
+            width: 320px;
+            height: 240px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded shadow p-6 w-full max-w-lg">
+        <h1 class="text-2xl font-bold mb-4 text-center">Part Number Lookup</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+            {% for category, message in messages %}
+            <div class="mb-2 p-2 rounded text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- CSV Upload -->
+        <form method="POST" enctype="multipart/form-data" class="mb-4">
+            <label class="block mb-1 font-semibold">Upload CSV File</label>
+            <input type="file" name="csvfile" accept=".csv" class="mb-2" required />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Upload CSV
+            </button>
+        </form>
+
+        <!-- Manual part number input -->
+        <form method="POST" class="mb-4">
+            <label class="block mb-1 font-semibold">Enter Part Number</label>
+            <input type="text" name="part_number" placeholder="e.g. P00072992" value="{{ part_number }}"
+                class="border rounded w-full p-2 mb-2" required />
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Search
+            </button>
+        </form>
+
+        <!-- Scan barcode -->
+        <button id="scanBtn" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 mb-4 w-full">
+            Scan Barcode
+        </button>
+
+        <!-- Video preview -->
+        <div id="scanner" class="mb-4 hidden">
+            <video id="video" autoplay></video>
+            <button id="closeScanner" class="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 w-full">Close
+                Scanner</button>
+        </div>
+
+        <!-- Result display -->
+        <div class="p-4 bg-gray-200 rounded min-h-[3rem]">
+            {% if location %}
+            <p><strong>Part Number:</strong> {{ part_number }}</p>
+            <p><strong>Location:</strong> {{ location }}</p>
+            {% elif error %}
+            <p class="text-red-600 font-semibold">{{ error }}</p>
+            {% else %}
+            <p>Result will appear here.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ZXing or jsQR for barcode scanning -->
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script>
+        const scanBtn = document.getElementById('scanBtn');
+        const scannerDiv = document.getElementById('scanner');
+        const video = document.getElementById('video');
+        const closeScannerBtn = document.getElementById('closeScanner');
+
+        let selectedDeviceId;
+        let codeReader;
+
+        scanBtn.addEventListener('click', async () => {
+            scannerDiv.classList.remove('hidden');
+            codeReader = new ZXing.BrowserBarcodeReader();
+
+            try {
+                const devices = await codeReader.listVideoInputDevices();
+                if (devices.length === 0) {
+                    alert('No video input devices found.');
+                    return;
+                }
+                selectedDeviceId = devices[0].deviceId;
+                await codeReader.decodeFromVideoDevice(selectedDeviceId, video, (result, err) => {
+                    if (result) {
+                        // Barcode detected!
+                        stopScanner();
+                        lookupPart(result.text);
+                    }
+                    if (err && !(err instanceof ZXing.NotFoundException)) {
+                        console.error(err);
+                    }
+                });
+            } catch (e) {
+                alert('Error starting video: ' + e);
+            }
+        });
+
+        closeScannerBtn.addEventListener('click', () => {
+            stopScanner();
+        });
+
+        function stopScanner() {
+            scannerDiv.classList.add('hidden');
+            if (codeReader) {
+                codeReader.reset();
+            }
+        }
+
+        async function lookupPart(partNumber) {
+            try {
+                const resp = await fetch('/lookup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ part_number: partNumber }),
+                });
+                const data = await resp.json();
+                if (resp.ok) {
+                    alert(`Part Number: ${partNumber}\nLocation: ${data.location}`);
+                } else {
+                    alert(data.error || 'Lookup failed.');
+                }
+            } catch (e) {
+                alert('Error during lookup: ' + e.message);
+            }
+        }
+    </script>
+</body>
+
+</html>
