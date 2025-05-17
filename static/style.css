@@ -1,0 +1,230 @@
+/* General body styling */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    color: #2d3748;
+    /* roughly text-gray-800 */
+}
+
+/* Container */
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 480px;
+    padding: 32px 48px;
+    animation: fadeIn ease 0.7s;
+}
+
+/* Headings */
+h1 {
+    font-size: 2.5rem;
+    /* 4xl approx */
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 32px;
+    color: #6b46c1;
+    /* purple-700 */
+    text-shadow: 0 1px 3px rgba(107, 70, 193, 0.7);
+}
+
+/* Forms */
+form {
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Labels */
+label {
+    font-size: 1.125rem;
+    /* lg */
+    font-weight: 600;
+    color: #4a5568;
+    /* gray-700 */
+}
+
+/* Inputs */
+input[type="file"],
+input[type="text"] {
+    font-size: 1rem;
+    padding: 12px 16px;
+    border-radius: 16px;
+    border: 1px solid #d1d5db;
+    /* gray-300 */
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    color: #4a5568;
+    /* gray-700 */
+}
+
+/* input text focus */
+input[type="text"]:focus {
+    border-color: #805ad5;
+    /* purple-600 */
+    box-shadow: 0 0 6px 2px rgba(128, 90, 213, 0.5);
+    /* purple-400 ring */
+}
+
+/* file input special */
+input[type="file"] {
+    cursor: pointer;
+}
+
+/* file input button styling (using ::file-selector-button for modern browsers) */
+input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #6b46c1;
+    /* purple-600 */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #553c9a;
+    /* purple-700 */
+}
+
+/* Buttons general */
+button {
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 16px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Specific button colors */
+button.upload {
+    background-color: #6b46c1;
+    /* purple-700 */
+}
+
+button.upload:hover {
+    background-color: #553c9a;
+    /* purple-800 */
+}
+
+button.search {
+    background-color: #2f855a;
+    /* green-600 */
+}
+
+button.search:hover {
+    background-color: #276749;
+    /* green-700 */
+}
+
+button.scan {
+    background-color: #4c51bf;
+    /* indigo-600 */
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px rgba(74, 85, 104, 0.2);
+}
+
+button.scan:hover {
+    background-color: #434190;
+    /* indigo-700 */
+}
+
+button.stop {
+    background-color: #c53030;
+    /* red-600 */
+    margin-top: 16px;
+    box-shadow: 0 4px 6px rgba(74, 85, 104, 0.2);
+}
+
+button.stop:hover {
+    background-color: #9b2c2c;
+    /* red-700 */
+}
+
+/* Scanner video */
+#scanner video {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: block;
+}
+
+/* Scanner container */
+#scanner.hidden {
+    display: none;
+}
+
+/* Result box */
+#result {
+    background-color: #f7fafc;
+    /* gray-50 */
+    border: 1px solid #e2e8f0;
+    /* gray-200 */
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    min-height: 100px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #4a5568;
+    /* gray-700 */
+    box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.1);
+    user-select: text;
+}
+
+/* Error / Success message */
+.message {
+    margin-bottom: 32px;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.message.error {
+    background-color: #fff5f5;
+    /* red-100 */
+    color: #c53030;
+    /* red-700 */
+}
+
+.message.success {
+    background-color: #f0fff4;
+    /* green-100 */
+    color: #2f855a;
+    /* green-700 */
+}
+
+/* Fade-in animation */
+.fade-in {
+    animation: fadeIn ease 0.7s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
